@@ -8,15 +8,14 @@ const web3 = new Web3(Web3.givenProvider);
 
 // For our project, contract are deployes and tested on local ganache network
 // Regardless of where the contract is deployed, the contractAddr needs to be accurate
-const contractAddr = '0x931a2E382c5260e6CB23A5CAA28a8b77971e595d';
+const contractAddr = '0xd87F39eA6f5Ab2f2c5A8072C6122A978d64950FE';
 const SimpleContract = new web3.eth.Contract(simpleStorageAbi, contractAddr);
-
 
 
 function App() {
   // React Hooks for getting and setting variables to contract
-  const [number, setNumber] = useState(0);
-  const [getNumber, setGetNumber] = useState('0x00')
+  const [number, setNumber] = useState("");
+  const [getNumber, setGetNumber] = useState("")
 
   // Function handlers for events
   const handleGet = async (e) => {
