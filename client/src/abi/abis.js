@@ -1,4 +1,6 @@
-// Import ABI of deployed contract
+// This ABI is copied from root/blockchain/build/contracts.EmployeeAttendance.json
+// React App does not allow import from outside src file, hence abi is to be copied and updates
+// every time there are changed made to out smart contract.
 export const employeeAttendanceAbi = [
     {
       "inputs": [
