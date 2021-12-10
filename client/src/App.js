@@ -1,65 +1,85 @@
 import React, { useState } from 'react';
 import Web3 from 'web3';
-import { simpleStorageAbi } from './abi/abis';
+import { employeeAttendanceAbi } from './abi/abis'; // Import ABI of deployed contract
 import './App.css';
-
 
 const web3 = new Web3(Web3.givenProvider);
 
 // For our project, contract are deployes and tested on local ganache network
-// Regardless of where the contract is deployed, the contractAddr needs to be accurate
-const contractAddr = '0xd87F39eA6f5Ab2f2c5A8072C6122A978d64950FE';
-const SimpleContract = new web3.eth.Contract(simpleStorageAbi, contractAddr);
+// Regardless of where the contract is deployed, the contractAddr needs to be updated
+const contractAddr = '0xeA651757a6AaEe3Ed6d40b49e236EFAC000Bd87D';
+const AttendanceContract = new web3.eth.Contract(employeeAttendanceAbi, contractAddr);
 
 
 function App() {
-  // React Hooks for getting and setting variables to contract
-  const [number, setNumber] = useState("");
-  const [getNumber, setGetNumber] = useState("")
+  const [empID, setEmpID] = useState(""); // Hook for setting Employee ID
+  const [userName, setUserName] = useState(""); // Hook for setting User Name
+  const [employeeData, showEmployeeData] = useState(""); // Hook for Showing Employees Data
 
-  // Function handlers for events
-  const handleGet = async (e) => {
+  // Function handler for get employees data
+  const getEmployees = async (e) => {
     e.preventDefault();
-    const result = await SimpleContract.methods.get().call();
-    setGetNumber(result);
+    // Calls getEmployees() method on our deployed EmployeeAttendance Smart Contract
+    const result = await AttendanceContract.methods.getEmployees().call();
+    // Sends the result to Hook
+    showEmployeeData(result)
+    // Log Result
     console.log(result);
   }
 
-  const handleSet = async (e) => {
+  // Function handler to add new employee
+  const addEmployee = async (e) => {
     e.preventDefault();    
+    // Setup transaction
     const accounts = await window.ethereum.enable();
+    // Selects first account of user wallet address. Can be changed if using Metamask via its interface
     const account = accounts[0];
-    const gas = await SimpleContract.methods.set(number)
-                        .estimateGas();
-    const result = await SimpleContract.methods.set(number).send({
+    // Calculate the gas required for transaction
+    const gas = await AttendanceContract.methods.addEmployee(empID, userName).estimateGas();
+    // Send transaction
+    const result = await AttendanceContract.methods.addEmployee(empID, userName).send({
       from: account,
       gas 
     })
+    // Log Result
     console.log(result);
   }
 
-  
+  // Returns the html to be displayed in index.html
   return (
     <div className="App">
       <header className="App-header">
-        <form onSubmit={handleSet}>
-          <label>
-            Set Number:
-            <input 
-              type="text"
-              name="name"
-              value={number}
-              onChange={ e => setNumber(e.target.value) } />
-          </label>
-          <input type="submit" value="Set Number" />
-        </form>
-        <br/>
+        <form onSubmit={addEmployee}>
+            <label>
+                Emp ID:
+                <input 
+                type="text"
+                name="empID"
+                value={empID}
+                onChange={ e => setEmpID(e.target.value) } />
+            </label>
+            <br></br>
+            <label>
+                User Name:
+                <input 
+                type="text"
+                name="userName"
+                value={userName}
+                onChange={ e => setUserName(e.target.value) } />
+            </label>
+            <br></br>
+            <input type="submit" value="Add Employee" />
+            </form>
+        
+        <br></br>
+        <br></br>
+
         <button
-          onClick={handleGet}
+          onClick={getEmployees}
           type="button" > 
-          Get Number 
+          Display Employees 
         </button>
-        { getNumber }
+        { employeeData }
       </header>
     </div>
   );
