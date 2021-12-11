@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import Web3 from 'web3';
-import { employeeAttendanceAbi } from './abi/abis'; // Import ABI of deployed contract
+//import { employeeAttendanceAbi } from './abi/abis'; // Import ABI of deployed contract
 import './App.css';
+
+// Get EmployeeAttendance contract abi and deployed address
+var contract_json = require('./blockchain/build/contracts/EmployeeAttendance.json');
+var EmployeeAttendanceABI = contract_json.abi;
+var EmployeeAttendanceAddress = contract_json.networks[5777].address; // Update Network id "5777" per your network
 
 const web3 = new Web3(Web3.givenProvider);
 
 // For our project, contract are deployes and tested on local ganache network
-// Regardless of where the contract is deployed, the contractAddr needs to be updated
-const contractAddr = '0xeA651757a6AaEe3Ed6d40b49e236EFAC000Bd87D';
-const AttendanceContract = new web3.eth.Contract(employeeAttendanceAbi, contractAddr);
-
+const AttendanceContract = new web3.eth.Contract(EmployeeAttendanceABI, EmployeeAttendanceAddress);
 
 function App() {
   const [empID, setEmpID] = useState(""); // Hook for setting Employee ID
