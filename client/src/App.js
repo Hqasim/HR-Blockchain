@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import Web3 from 'web3';
-//import { employeeAttendanceAbi } from './abi/abis'; // Import ABI of deployed contract
 import './App.css';
 
 // Get EmployeeAttendance contract abi and deployed address
@@ -16,6 +15,11 @@ const AttendanceContract = new web3.eth.Contract(EmployeeAttendanceABI, Employee
 function App() {
   const [empID, setEmpID] = useState(""); // Hook for setting Employee ID
   const [userName, setUserName] = useState(""); // Hook for setting User Name
+  const [firstName, setFirstName] = useState(""); // Hook for setting First Name
+  const [lastName, setLastName] = useState(""); // Hook for setting Last Name
+  const [email, setEmail] = useState(""); // Hook for setting Email
+  const [department, setDepartment] = useState(""); // Hook for setting User Name
+  const [designation, setDesignation] = useState(""); // Hook for setting User Name
   const [employeeData, showEmployeeData] = useState(""); // Hook for Showing Employees Data
 
   // Function handler for get employees data
@@ -37,9 +41,23 @@ function App() {
     // Selects first account of user wallet address. Can be changed if using Metamask via its interface
     const account = accounts[0];
     // Calculate the gas required for transaction
-    const gas = await AttendanceContract.methods.addEmployee(empID, userName).estimateGas();
+    const gas = await AttendanceContract.methods.addEmployee(
+        empID,
+        userName,
+        firstName,
+        lastName,
+        email,
+        department,
+        designation).estimateGas();
     // Send transaction
-    const result = await AttendanceContract.methods.addEmployee(empID, userName).send({
+    const result = await AttendanceContract.methods.addEmployee(
+        empID, 
+        userName,
+        firstName,
+        lastName,
+        email,
+        department,
+        designation).send({
       from: account,
       gas 
     })
@@ -68,6 +86,46 @@ function App() {
                 name="userName"
                 value={userName}
                 onChange={ e => setUserName(e.target.value) } />
+            </label>
+            <label>
+                First Name:
+                <input 
+                type="text"
+                name="firstName"
+                value={firstName}
+                onChange={ e => setFirstName(e.target.value) } />
+            </label>
+            <label>
+                Last Name:
+                <input 
+                type="text"
+                name="lastName"
+                value={lastName}
+                onChange={ e => setLastName(e.target.value) } />
+            </label>
+            <label>
+                Email:
+                <input 
+                type="text"
+                name="email"
+                value={email}
+                onChange={ e => setEmail(e.target.value) } />
+            </label>
+            <label>
+                Department:
+                <input 
+                type="text"
+                name="department"
+                value={department}
+                onChange={ e => setDepartment(e.target.value) } />
+            </label>
+            <label>
+                Designation:
+                <input 
+                type="text"
+                name="designation"
+                value={designation}
+                onChange={ e => setDesignation(e.target.value) } />
             </label>
             <br></br>
             <input type="submit" value="Add Employee" />
